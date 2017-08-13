@@ -63,6 +63,7 @@ class CountDown:
         self.btn_set15 = Button(self.controls, text = 'Set 15 (1)', command = self.set15_btn)
         self.btn_set30 = Button(self.controls, text = 'Set 30 (3)', command = self.set30_btn)
         self.btn_set45 = Button(self.controls, text = 'Set 45 (4)', command = self.set45_btn)
+        self.btn_set = Button(self.controls, text = 'Set... (t)', command = self.set_window)
         self.btn_start = Button(self.controls, text = 'Start (S)', command = self.start_btn)
         self.btn_stop = Button(self.controls, state='disabled', text = 'Stop (Z)', command = self.stop_btn)
         # packing widgets in the root window
@@ -70,8 +71,9 @@ class CountDown:
         self.btn_set15.grid(sticky=EW, row = 1, column = 1, padx = 5, pady = (5,2))
         self.btn_set30.grid(sticky=EW, row = 2, column = 1, padx = 5, pady = (5,2))
         self.btn_set45.grid(sticky=EW, row = 3, column = 1, padx = 5, pady = (5,2))
-        self.btn_start.grid(sticky=EW, row = 4, column = 1, padx = 5, pady = 2)
-        self.btn_stop.grid(sticky=EW, row = 5, column = 1, padx = 5, pady = (2,5))
+        self.btn_set.grid(sticky=EW, row = 4, column = 1, padx = 5, pady = (5,2))
+        self.btn_start.grid(sticky=EW, row = 5, column = 1, padx = 5, pady = 2)
+        self.btn_stop.grid(sticky=EW, row = 6, column = 1, padx = 5, pady = (2,5))
         if self.visibleControls:
             self.controls.pack(side="left", fill="y", expand=False)
         self.tick()
@@ -115,6 +117,18 @@ class CountDown:
             return '-'+time.strftime("%M:%S", time.gmtime(-seconds))
         else:
             return time.strftime("%M:%S", time.gmtime(seconds))
+    def string2seconds(self, string):
+        """ converts string to possibly negative times """
+        print('string2seconds', string)
+        if string == '':
+            return 0.0
+        multiply = 1
+        if string[0] == '-':
+            multiply = -1
+            string = string[1:]
+        t0 = time.mktime(time.strptime('0:0', '%M:%S'))
+        t1 = time.mktime(time.strptime(string, '%M:%S'))
+        return multiply * (t1-t0)
     def tick(self):
         # get the current local time from the PC
         if self.running:
@@ -165,5 +179,18 @@ class CountDown:
         self.set_btn(30.0 * 60)
     def set45_btn(self, event=None):
         self.set_btn(45.0 * 60)
+    def setFromString_btn(self, event=None):
+        self.set_btn(self.string2seconds(self.inputString.get()))
+    def set_window(self, event=None):
+        w = Toplevel(self.rootWindow)
+        w.wm_title("Set length")
+        l = Label(w, text="Set talk length (MM:SS)")
+        l.pack(side="top", fill="both", expand=True, padx=10, pady=5)
+        self.inputString=StringVar()
+        self.inputString.set('')
+        f = Entry(w, textvariable=self.inputString)
+        f.pack(side="top", fill="both", expand=True, padx=10, pady=5)
+        b = Button(w, text="Ok", width=5, command=self.setFromString_btn)
+        b.pack(side="top", expand=True, padx=10, pady=5)
 
 counter = CountDown()
