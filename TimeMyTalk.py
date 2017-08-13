@@ -45,10 +45,10 @@ import tkFont
 #from Tkinter import ttk
 import time
 
-class CountDown:
+class CountDown():
     """Count Down Class"""
-    def __init__(self):
-        self.rootWindow = Tk()
+    def __init__(self, tkRoot):
+        self.rootWindow = Toplevel(tkRoot)
         self.rootWindow.title('GLU 2017 Timer')
         self.rootWindow.geometry("300x250")
         self.rootWindow.resizable(1,1)
@@ -99,8 +99,8 @@ class CountDown:
         self.rootWindow.bind('<Escape>', self.endFullscreen)
         self.rootWindow.bind('c', self.toggleControlsVisibility)
         self.rootWindow.bind('q', self.Quit)
-        # start GUI main loop
-        self.rootWindow.mainloop()
+        # make sure widget instances are deleted
+        self.rootWindow.protocol("WM_DELETE_WINDOW", self.Quit)
     def resize(self, event):
         labelWidth = self.clock.winfo_width()
         labelHeight = self.clock.winfo_height()
@@ -120,7 +120,7 @@ class CountDown:
         else:
             self.controls.pack()
         self.visibleControls = not self.visibleControls
-    def Quit(self, event):
+    def Quit(self, event=None):
         self.rootWindow.quit()
     def seconds2string(self, seconds):
         """ converts possibly negative times to string """
@@ -202,4 +202,12 @@ class CountDown:
         b = Button(w, text="Ok", width=5, command=self.setFromString_btn)
         b.pack(side="top", expand=True, padx=10, pady=5)
 
-counter = CountDown()
+root = Tk()
+
+# You can create as many counters as you want
+counter = CountDown(root)
+#counter2 = CountDown(root)
+
+root.withdraw()
+# start Tk main loop
+root.mainloop()
