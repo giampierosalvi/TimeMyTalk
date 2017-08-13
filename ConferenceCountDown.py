@@ -26,12 +26,24 @@ class CountDown:
         self.hours = 0
         self.running = False
         #clock = Label(rootWindow, font=('fixed', 20, 'bold'))
+        self.controls = Frame(self.rootWindow)
         self.clockfont = tkFont.Font(family="DejaVu Sans", size="20")
         self.clock = Label(self.rootWindow, font=self.clockfont)
         #clock.grid(row = 1, column = 2, padx = 5, pady = (5,2))
-        self.clock.pack(side="top", fill="both", expand=True)
+        self.controls.pack(side="left", fill="y", expand=True)
+        self.clock.pack(side="left", fill="both", expand=True)
         self.tick()
         self.rootWindow.bind('<Configure>', self.resize)
+        self.btn_set15 = Button(self.controls, state='disabled', text = 'Set 15 (1)', command = self.set15_btn)
+        self.btn_set45 = Button(self.controls, state='disabled', text = 'Set 45 (4)', command = self.set45_btn)
+        self.btn_set15.grid(sticky=EW, row = 1, column = 1, padx = 5, pady = (5,2))
+        self.btn_set45.grid(sticky=EW, row = 2, column = 1, padx = 5, pady = (5,2))
+        self.btn_start = Button(self.controls, text = 'Start (S)', bg='green', command = self.start_btn)
+        self.btn_start.grid(sticky=EW, row = 3, column = 1, padx = 5, pady = 2)
+        self.btn_stop = Button(self.controls, state='disabled', text = 'Stop (Z)', command = self.stop_btn)
+        self.btn_stop.grid(sticky=EW, row = 4, column = 1, padx = 5, pady = (2,5))
+        #btn_exit = Button(rootWindow, text = 'exit', command = exit)
+        #btn_exit.grid(row = 4, column = 1, padx = 5, pady = 5) 
         self.rootWindow.mainloop()
     def resize(self, event):
         self.clockfont.configure(size = int(self.rootWindow.winfo_width()/4.0))
@@ -42,9 +54,9 @@ class CountDown:
             newSec = time.strftime('%S')
         else:
             newSec = ''
-            prevSec = ''
-        if newSec != prevSec:
-            prevSec = newSec
+            self.prevSec = ''
+        if newSec != self.prevSec:
+            self.prevSec = newSec
             self.secs = self.secs - 1
             if self.secs < 0:
                 self.secs = 59
@@ -109,18 +121,5 @@ class CountDown:
         self.btn_start.config(state='normal',bg='green')
         self.btn_set15.config(state='normal')
         self.btn_set45.config(state='disabled')
-
-if False:
-    btn_set15 = Button(rootWindow, state='disabled', text = 'Set 15 (1)', command = set15_btn)
-    btn_set45 = Button(rootWindow, state='disabled', text = 'Set 45 (4)', command = set45_btn)
-    btn_set15.grid(sticky=EW, row = 1, column = 3, padx = 5, pady = (5,2))
-    btn_set45.grid(sticky=EW, row = 2, column = 3, padx = 5, pady = (5,2))
-    btn_start = Button(rootWindow, text = 'Start (S)', bg='green', command = start_btn)
-    btn_start.grid(sticky=EW, row = 3, column = 3, padx = 5, pady = 2)
-    btn_stop = Button(rootWindow, state='disabled', text = 'Stop (Z)', command = stop_btn)
-    btn_stop.grid(sticky=EW, row = 4, column = 3, padx = 5, pady = (2,5))
-    #btn_exit = Button(rootWindow, text = 'exit', command = exit)
-    #btn_exit.grid(row = 4, column = 1, padx = 5, pady = 5) 
-
 
 counter = CountDown()
