@@ -5,7 +5,7 @@
 # The different talk lengths are hardcoded to simplify control during execution.
 # The programme can be controlled either by mouse and buttons or with keystrokes.
 # When the time is running out, the programme first changes the background from
-# green to red and finally starts blinking between to shades of red.
+# green to red and finally starts blinking between two shades of red.
 #
 # Keys:
 # 1, 3, 4: set length to 15, 30 and 45 minutes (adapted to GLU 2017)
