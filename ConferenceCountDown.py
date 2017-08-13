@@ -21,6 +21,7 @@ class CountDown:
         self.rootWindow.title('GLU 2017 Timer')
         self.rootWindow.geometry("300x250")
         self.rootWindow.resizable(1,1)
+        self.isFullscreen = False
         # configure colors
         self.defaultColour = self.rootWindow.cget("bg")
         self.plentyOfTimeColor = 'light green'
@@ -59,6 +60,7 @@ class CountDown:
         self.rootWindow.bind('1', self.set15_btn)
         self.rootWindow.bind('3', self.set30_btn)
         self.rootWindow.bind('4', self.set45_btn)
+        self.rootWindow.bind('f', self.toggleFullscreen)
         # start GUI main loop
         self.rootWindow.mainloop()
     def resize(self, event):
@@ -68,6 +70,19 @@ class CountDown:
         fontSize = min(int(labelHeight*0.9), int(labelWidth/4.3))
         self.clockfont.configure(size = fontSize)
         self.clock.config(font=self.clockfont)
+    def toggleFullscreen(self, event):
+        if self.isFullscreen:
+            print('exiting fullscreen, prevgeom=', self.previousGeometry.encode('ascii', 'ignore'))
+            self.rootWindow.geometry(self.previousGeometry.encode('ascii', 'ignore'))
+            self.isFullscreen = False
+        else:
+            print('entering fullscreen')
+            pad = 3
+            self.previousGeometry = self.rootWindow.winfo_geometry()
+            self.rootWindow.geometry("{0}x{1}+0+0".format(
+                self.rootWindow.winfo_screenwidth()-pad,
+                self.rootWindow.winfo_screenheight()-pad))
+            self.isFullscreen = True
     def tick(self):
         # get the current local time from the PC
         if self.running:
