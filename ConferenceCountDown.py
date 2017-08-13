@@ -61,6 +61,8 @@ class CountDown:
         self.rootWindow.bind('3', self.set30_btn)
         self.rootWindow.bind('4', self.set45_btn)
         self.rootWindow.bind('f', self.toggleFullscreen)
+        self.rootWindow.bind('q', self.Quit)
+        self.rootWindow.bind('<Escape>', self.endFullscreen)
         # start GUI main loop
         self.rootWindow.mainloop()
     def resize(self, event):
@@ -73,6 +75,12 @@ class CountDown:
     def toggleFullscreen(self, event):
         self.isFullscreen = not self.isFullscreen
         self.rootWindow.attributes('-fullscreen', self.isFullscreen)
+    def endFullscreen(self, event):
+        self.isFullscreen = False
+        self.rootWindow.attributes('-fullscreen', self.isFullscreen)
+    def Quit(self, event):
+        print('Quitting')
+        self.rootWindow.quit()
     def tick(self):
         # get the current local time from the PC
         if self.running:
