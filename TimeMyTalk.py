@@ -47,8 +47,8 @@ import time
 
 class CountDown():
     """Count Down Class"""
-    def __init__(self, tkRoot=Tk()):
-        self.mainWindow = Toplevel(tkRoot)
+    def __init__(self, tkWindow):
+        self.mainWindow = tkWindow
         self.mainWindow.title('GLU 2017 Timer')
         self.mainWindow.geometry("300x250")
         self.mainWindow.resizable(1,1)
@@ -204,11 +204,17 @@ class CountDown():
 
 root = Tk()
 
-# You can create as many counters as you want, but at the moment
-# quittin one will quit all
+# If you only want one counter (most common), you can create it
+# in the root window like this
 counter = CountDown(root)
-#counter2 = CountDown(root)
 
-root.withdraw()
+# If you want several counters, create them in a toplevel of the
+# root like this:
+# counter1 = CountDown(Toplevel(root))
+# counter2 = CountDown(Toplevel(root))
+# however in the current implementation, quitting one will quit all
+# in this case, you will also want to hide the (empty) root window
+# root.withdraw()
+
 # start Tk main loop
 root.mainloop()
