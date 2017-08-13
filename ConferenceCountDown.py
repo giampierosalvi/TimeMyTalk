@@ -13,8 +13,7 @@
 # f:       toggle fullscreeen
 # Esc:     exit fullscreen
 # c:       toggle controls (button) visibility
-# S:       start countdown
-# Z:       stop countdown
+# S:       toggle start/stop countdown
 # q:       quit (without confirmation)
 #
 # Note: written for python 2.7, to update to python 3.x, change Tkinter to tkinter
