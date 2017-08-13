@@ -2,13 +2,13 @@
 Simple countdown timer with large fonts for conference talks. Useful when you want to make sure that presenters do not go overtime.
 
 ## Example use:
-You will need:
-* relatively big flat screen (nowadays people throw these away)
-* raspberry pi with HDMI cable and possibly adapters to the screen
-* wireless keyboard
+You will need either an old laptop or:
+* a relatively big flat screen (nowadays people throw these away)
+* a raspberry pi with HDMI cable and possibly adapters to the screen
+* a wireless keyboard
 
 Now you can:
-1) Attach the respberry pi to the screen so that the whole thing is easy to carry
+1) Attach the respberry pi to the screen so that the whole thing is easy to carry (or use the laptop)
 2) place the screen so that both the audience and the presenter can easily see it
 3) start TimeMyTalk.py and make it full screen ('f')
 4) sit in the audience with the wireless keyboard to set, start and stop the timer
