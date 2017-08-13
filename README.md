@@ -1,5 +1,5 @@
 # TimeMyTalk
-Simple countdown timer with large fonts for conference talks
+Simple countdown timer with large fonts for conference talks. Useful when you want to make sure that presenters do not go overtime.
 
 ## Example use:
 You will need:
