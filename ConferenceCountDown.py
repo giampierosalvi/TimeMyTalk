@@ -1,13 +1,31 @@
 #!/usr/bin/python
 #
+# ./ConferenceCountDown.py
+# Simple countdown clock with large plots to be used to keep time during talks.
+# The different talk lengths are hardcoded to simplify control during execution.
+# The programme can be controlled either by mouse and buttons or with keystrokes.
+# When the time is running out, the programme first changes the background from
+# green to red and finally starts blinking between to shades of red.
+#
+# Keys:
+# 1, 3, 4: set length to 15, 30 and 45 minutes (adapted to GLU 2017)
+# f:       toggle fullscreeen
+# Esc:     exit fullscreen
+# c:       toggle controls (button) visibility
+# S:       start countdown
+# Z:       stop countdown
+# q:       quit (without confirmation)
+#
 # Note: written for python 2.7, to update to python 3.x, change Tkinter to tkinter
 #   and tkFont to tkinter.font
 #
 # Note on fonts: Tk as installed by Ubuntu uses XTF to handle fonts. This
-# gives a large number of true type font families and works well in the
-# version of python installed by Ubuntu. However, the version of Tk installed
-# in Anaconda only supports a limited number of bitmapped X fonts that look
-# horrible when scaled up.
+#   gives a large number of true type font families and works well in the
+#   version of python installed by Ubuntu. However, the version of Tk installed
+#   in Anaconda only supports a limited number of bitmapped X fonts that look
+#   horrible when scaled up.
+#
+# (C) 2017, Giampiero Salvi <giampi@kth.se>
 
 from Tkinter import *
 import tkFont
@@ -29,6 +47,9 @@ class CountDown:
         self.shortTimeColor1 = 'orange red'
         self.shortTimeColor2 = 'coral'
         self.stoppedColor = self.outOfTimeColor = 'red'
+        # configure times
+        self.firstWarningMinutes = 5
+        self.secondWarningMinutes = 2
         # status related variables
         self.time1 = ''
         self.prevSec = ''
@@ -110,9 +131,9 @@ class CountDown:
                         self.hours = 0
                         self.mins = 0
                         self.secs = 0
-            if self.mins<5 and self.mins>=4:
+            if self.mins < self.firstWarningMinutes and self.mins >= self.secondWarningMinutes:
                 self.clock.config(bg=self.shortTimeColor1)
-            if self.mins<4:
+            if self.mins < self.secondWarningMinutes:
                 currentColor = self.clock.cget("background")
                 nextColor = self.shortTimeColor2 if currentColor == self.shortTimeColor1 else self.shortTimeColor1
                 self.clock.config(bg=nextColor)
