@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# ./ConferenceCountDown.py
+# ./TimeMyTalk.py
 # Simple countdown clock with large plots to be used to keep time during talks.
 # The different talk lengths are hardcoded to simplify control during execution.
 # The programme can be controlled either by mouse and buttons or with keystrokes.
