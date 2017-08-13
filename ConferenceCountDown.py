@@ -9,6 +9,7 @@
 #
 # Keys:
 # 1, 3, 4: set length to 15, 30 and 45 minutes (adapted to GLU 2017)
+# t:       set length freely with a string in the format MM:SS
 # f:       toggle fullscreeen
 # Esc:     exit fullscreen
 # c:       toggle controls (button) visibility
@@ -84,6 +85,7 @@ class CountDown:
         self.rootWindow.bind('1', self.set15_btn)
         self.rootWindow.bind('3', self.set30_btn)
         self.rootWindow.bind('4', self.set45_btn)
+        self.rootWindow.bind('t', self.set_window)
         self.rootWindow.bind('f', self.toggleFullscreen)
         self.rootWindow.bind('<Escape>', self.endFullscreen)
         self.rootWindow.bind('c', self.toggleControlsVisibility)
@@ -119,7 +121,7 @@ class CountDown:
             return time.strftime("%M:%S", time.gmtime(seconds))
     def string2seconds(self, string):
         """ converts string to possibly negative times """
-        print('string2seconds', string)
+        #print('string2seconds', string)
         if string == '':
             return 0.0
         multiply = 1
