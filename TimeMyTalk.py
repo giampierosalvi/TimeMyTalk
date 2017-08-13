@@ -47,15 +47,15 @@ import time
 
 class CountDown():
     """Count Down Class"""
-    def __init__(self, tkRoot):
-        self.rootWindow = Toplevel(tkRoot)
-        self.rootWindow.title('GLU 2017 Timer')
-        self.rootWindow.geometry("300x250")
-        self.rootWindow.resizable(1,1)
+    def __init__(self, tkRoot=Tk()):
+        self.mainWindow = Toplevel(tkRoot)
+        self.mainWindow.title('GLU 2017 Timer')
+        self.mainWindow.geometry("300x250")
+        self.mainWindow.resizable(1,1)
         self.isFullscreen = False
         self.visibleControls = False
         # configure colors
-        self.defaultColour = self.rootWindow.cget("bg")
+        self.defaultColour = self.mainWindow.cget("bg")
         self.plentyOfTimeColor = 'light green'
         self.shortTimeColor1 = 'orange red'
         self.shortTimeColor2 = 'coral'
@@ -71,8 +71,8 @@ class CountDown():
         self.running = False
         # GUI widgets
         self.clockfont = tkFont.Font(family="DejaVu Sans", size="20")
-        self.clock = Label(self.rootWindow, font=self.clockfont, text=self.displayString)
-        self.controls = Frame(self.rootWindow)
+        self.clock = Label(self.mainWindow, font=self.clockfont, text=self.displayString)
+        self.controls = Frame(self.mainWindow)
         self.btn_set15 = Button(self.controls, text = 'Set 15 (1)', command = self.set15_btn)
         self.btn_set30 = Button(self.controls, text = 'Set 30 (3)', command = self.set30_btn)
         self.btn_set45 = Button(self.controls, text = 'Set 45 (4)', command = self.set45_btn)
@@ -89,18 +89,18 @@ class CountDown():
             self.controls.pack(side="left", fill="y", expand=False)
         self.tick()
         # binding events
-        self.rootWindow.bind('<Configure>', self.resize)
-        self.rootWindow.bind('S', self.toggleRunning_btn)
-        self.rootWindow.bind('1', self.set15_btn)
-        self.rootWindow.bind('3', self.set30_btn)
-        self.rootWindow.bind('4', self.set45_btn)
-        self.rootWindow.bind('t', self.set_window)
-        self.rootWindow.bind('f', self.toggleFullscreen)
-        self.rootWindow.bind('<Escape>', self.endFullscreen)
-        self.rootWindow.bind('c', self.toggleControlsVisibility)
-        self.rootWindow.bind('q', self.Quit)
+        self.mainWindow.bind('<Configure>', self.resize)
+        self.mainWindow.bind('S', self.toggleRunning_btn)
+        self.mainWindow.bind('1', self.set15_btn)
+        self.mainWindow.bind('3', self.set30_btn)
+        self.mainWindow.bind('4', self.set45_btn)
+        self.mainWindow.bind('t', self.set_window)
+        self.mainWindow.bind('f', self.toggleFullscreen)
+        self.mainWindow.bind('<Escape>', self.endFullscreen)
+        self.mainWindow.bind('c', self.toggleControlsVisibility)
+        self.mainWindow.bind('q', self.Quit)
         # make sure widget instances are deleted
-        self.rootWindow.protocol("WM_DELETE_WINDOW", self.Quit)
+        self.mainWindow.protocol("WM_DELETE_WINDOW", self.Quit)
     def resize(self, event):
         labelWidth = self.clock.winfo_width()
         labelHeight = self.clock.winfo_height()
@@ -110,10 +110,10 @@ class CountDown():
         self.clock.config(font=self.clockfont)
     def toggleFullscreen(self, event):
         self.isFullscreen = not self.isFullscreen
-        self.rootWindow.attributes('-fullscreen', self.isFullscreen)
+        self.mainWindow.attributes('-fullscreen', self.isFullscreen)
     def endFullscreen(self, event):
         self.isFullscreen = False
-        self.rootWindow.attributes('-fullscreen', self.isFullscreen)
+        self.mainWindow.attributes('-fullscreen', self.isFullscreen)
     def toggleControlsVisibility(self, event):
         if self.visibleControls:
             self.controls.pack_forget()
@@ -121,7 +121,7 @@ class CountDown():
             self.controls.pack()
         self.visibleControls = not self.visibleControls
     def Quit(self, event=None):
-        self.rootWindow.quit()
+        self.mainWindow.quit()
     def seconds2string(self, seconds):
         """ converts possibly negative times to string """
         if seconds<0:
@@ -191,7 +191,7 @@ class CountDown():
     def setFromString_btn(self, event=None):
         self.set_btn(self.string2seconds(self.inputString.get()))
     def set_window(self, event=None):
-        w = Toplevel(self.rootWindow)
+        w = Toplevel(self.mainWindow)
         w.wm_title("Set length")
         l = Label(w, text="Set talk length (MM:SS)")
         l.pack(side="top", fill="both", expand=True, padx=10, pady=5)
@@ -204,7 +204,8 @@ class CountDown():
 
 root = Tk()
 
-# You can create as many counters as you want
+# You can create as many counters as you want, but at the moment
+# quittin one will quit all
 counter = CountDown(root)
 #counter2 = CountDown(root)
 
