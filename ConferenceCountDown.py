@@ -71,18 +71,8 @@ class CountDown:
         self.clockfont.configure(size = fontSize)
         self.clock.config(font=self.clockfont)
     def toggleFullscreen(self, event):
-        if self.isFullscreen:
-            print('exiting fullscreen, prevgeom=', self.previousGeometry.encode('ascii', 'ignore'))
-            self.rootWindow.geometry(self.previousGeometry.encode('ascii', 'ignore'))
-            self.isFullscreen = False
-        else:
-            print('entering fullscreen')
-            pad = 3
-            self.previousGeometry = self.rootWindow.winfo_geometry()
-            self.rootWindow.geometry("{0}x{1}+0+0".format(
-                self.rootWindow.winfo_screenwidth()-pad,
-                self.rootWindow.winfo_screenheight()-pad))
-            self.isFullscreen = True
+        self.isFullscreen = not self.isFullscreen
+        self.rootWindow.attributes('-fullscreen', self.isFullscreen)
     def tick(self):
         # get the current local time from the PC
         if self.running:
