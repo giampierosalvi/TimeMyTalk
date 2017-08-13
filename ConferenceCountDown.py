@@ -22,6 +22,7 @@ class CountDown:
         self.rootWindow.geometry("300x250")
         self.rootWindow.resizable(1,1)
         self.isFullscreen = False
+        self.visibleControls = False
         # configure colors
         self.defaultColour = self.rootWindow.cget("bg")
         self.plentyOfTimeColor = 'light green'
@@ -32,26 +33,27 @@ class CountDown:
         self.time1 = ''
         self.prevSec = ''
         self.mins = 15
-        self.secs = 10
+        self.secs = 0
         self.hours = 0
         self.running = False
         # GUI widgets
+        self.clockfont = tkFont.Font(family="DejaVu Sans", size="20")
+        self.clock = Label(self.rootWindow, font=self.clockfont)
         self.controls = Frame(self.rootWindow)
         self.btn_set15 = Button(self.controls, text = 'Set 15 (1)', command = self.set15_btn)
         self.btn_set30 = Button(self.controls, text = 'Set 30 (3)', command = self.set30_btn)
         self.btn_set45 = Button(self.controls, text = 'Set 45 (4)', command = self.set45_btn)
         self.btn_start = Button(self.controls, text = 'Start (S)', command = self.start_btn)
         self.btn_stop = Button(self.controls, state='disabled', text = 'Stop (Z)', command = self.stop_btn)
-        self.clockfont = tkFont.Font(family="DejaVu Sans", size="20")
-        self.clock = Label(self.rootWindow, font=self.clockfont)
         # packing widgets in the root window
-        self.controls.pack(side="left", fill="y", expand=False)
+        self.clock.pack(side="left", fill="both", expand=True)
         self.btn_set15.grid(sticky=EW, row = 1, column = 1, padx = 5, pady = (5,2))
         self.btn_set30.grid(sticky=EW, row = 2, column = 1, padx = 5, pady = (5,2))
         self.btn_set45.grid(sticky=EW, row = 3, column = 1, padx = 5, pady = (5,2))
         self.btn_start.grid(sticky=EW, row = 4, column = 1, padx = 5, pady = 2)
         self.btn_stop.grid(sticky=EW, row = 5, column = 1, padx = 5, pady = (2,5))
-        self.clock.pack(side="left", fill="both", expand=True)
+        if self.visibleControls:
+            self.controls.pack(side="left", fill="y", expand=False)
         self.tick()
         # binding events
         self.rootWindow.bind('<Configure>', self.resize)
@@ -61,8 +63,9 @@ class CountDown:
         self.rootWindow.bind('3', self.set30_btn)
         self.rootWindow.bind('4', self.set45_btn)
         self.rootWindow.bind('f', self.toggleFullscreen)
-        self.rootWindow.bind('q', self.Quit)
         self.rootWindow.bind('<Escape>', self.endFullscreen)
+        self.rootWindow.bind('c', self.toggleControlsVisibility)
+        self.rootWindow.bind('q', self.Quit)
         # start GUI main loop
         self.rootWindow.mainloop()
     def resize(self, event):
@@ -78,6 +81,12 @@ class CountDown:
     def endFullscreen(self, event):
         self.isFullscreen = False
         self.rootWindow.attributes('-fullscreen', self.isFullscreen)
+    def toggleControlsVisibility(self, event):
+        if self.visibleControls:
+            self.controls.pack_forget()
+        else:
+            self.controls.pack()
+        self.visibleControls = not self.visibleControls
     def Quit(self, event):
         print('Quitting')
         self.rootWindow.quit()
