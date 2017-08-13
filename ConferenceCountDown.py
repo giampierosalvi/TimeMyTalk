@@ -47,19 +47,18 @@ class CountDown:
         self.shortTimeColor1 = 'orange red'
         self.shortTimeColor2 = 'coral'
         self.stoppedColor = self.outOfTimeColor = 'red'
-        # configure times
-        self.firstWarningMinutes = 5
-        self.secondWarningMinutes = 2
-        # status related variables
-        self.time1 = ''
-        self.prevSec = ''
-        self.mins = 15
-        self.secs = 0
-        self.hours = 0
+        # configure times (in seconds)
+        self.refreshRate = 100 # milliseconds. The lower the smoother, but the more CPU intensive
+        self.firstWarningSeconds = 5.0 * 60
+        self.secondWarningSeconds = 2.0 * 60
+        self.accumulatedTime = 0.0 # time accumulated between subsequent start/stop
+        self.startTime = 0.0       # time from Event when start button is pressed
+        self.talkTime = 15.0 * 60  # lenght of the talk
+        self.displayString = self.seconds2string(self.talkTime)
         self.running = False
         # GUI widgets
         self.clockfont = tkFont.Font(family="DejaVu Sans", size="20")
-        self.clock = Label(self.rootWindow, font=self.clockfont)
+        self.clock = Label(self.rootWindow, font=self.clockfont, text=self.displayString)
         self.controls = Frame(self.rootWindow)
         self.btn_set15 = Button(self.controls, text = 'Set 15 (1)', command = self.set15_btn)
         self.btn_set30 = Button(self.controls, text = 'Set 30 (3)', command = self.set30_btn)
@@ -109,77 +108,62 @@ class CountDown:
             self.controls.pack()
         self.visibleControls = not self.visibleControls
     def Quit(self, event):
-        print('Quitting')
         self.rootWindow.quit()
+    def seconds2string(self, seconds):
+        """ converts possibly negative times to string """
+        if seconds<0:
+            return '-'+time.strftime("%M:%S", time.gmtime(-seconds))
+        else:
+            return time.strftime("%M:%S", time.gmtime(seconds))
     def tick(self):
         # get the current local time from the PC
         if self.running:
-            newSec = time.strftime('%S')
+            currentTime = time.time()
+            elapsedTime = currentTime - self.startTime + self.accumulatedTime
+            displayTime = self.talkTime - elapsedTime
+            #print('displayTime:', displayTime, 'elapsedTime:', elapsedTime, 'accumulatedTime:', self.accumulatedTime)
+            newDisplayString = self.seconds2string(displayTime)
         else:
-            newSec = ''
-            self.prevSec = ''
-        if newSec != self.prevSec:
-            self.prevSec = newSec
-            self.secs = self.secs - 1
-            if self.secs < 0:
-                self.secs = 59
-                self.mins = self.mins - 1
-                if self.mins < 0:
-                    self.mins = 59
-                    self.hours = self.hours - 1
-                    if self.hours < 0: 
-                        self.hours = 0
-                        self.mins = 0
-                        self.secs = 0
-            if self.mins < self.firstWarningMinutes and self.mins >= self.secondWarningMinutes:
+            newDisplayString = ''
+            self.displayString = ''
+        # if time string has changed, update it
+        if newDisplayString != self.displayString:
+            self.displayString = newDisplayString
+            if displayTime < self.firstWarningSeconds and displayTime >= self.secondWarningSeconds:
                 self.clock.config(bg=self.shortTimeColor1)
-            if self.mins < self.secondWarningMinutes:
+            if displayTime < self.secondWarningSeconds:
                 currentColor = self.clock.cget("background")
                 nextColor = self.shortTimeColor2 if currentColor == self.shortTimeColor1 else self.shortTimeColor1
                 self.clock.config(bg=nextColor)
-        #time2 = '%02d:%02d:%02d' % (hours, mins, secs)
-        self.time2 = '%02d:%02d' % (self.mins, self.secs)
-        # if time string has changed, update it
-        if self.time2 != self.time1:
-            self.time1 = self.time2
-            self.clock.config(text=self.time2)
-        # calls itself every 200 milliseconds
-        # to update the time display as needed
-        # could use >200 ms, but display gets jerky
-        self.clock.after(200, self.tick)
+            self.clock.config(text=self.displayString)
+        self.clock.after(self.refreshRate, self.tick)
     def start_btn(self, event=None):
-        #global running
         self.clock.config(bg=self.plentyOfTimeColor)
+        self.startTime = time.time()
         self.btn_start.config(state='disabled')
         self.btn_stop.config(state='normal')
-        #self.btn_set15.config(state='disabled')
-        #self.btn_set45.config(state='disabled')
         self.running = True
     def stop_btn(self, event=None):
-        #global running 
+        currentTime = time.time()
         self.clock.config(bg=self.stoppedColor)
+        self.accumulatedTime = self.accumulatedTime + (currentTime - self.startTime)
         self.btn_start.config(state='normal')
         self.btn_stop.config(state='disabled')
-        #self.btn_set15.config(state='normal')
-        #self.btn_set45.config(state='normal')
         self.running = False
-    def set_btn(self, event=None):
+    def set_btn(self, seconds):
+        self.running = False
         self.clock.config(bg=self.defaultColour)
-        self.hours = 0
-        self.secs = 0
-        self.prevSec = ''
-        self.time1 = ''
-        self.running = False
+        self.accumulatedTime = 0.0
+        self.talkTime = seconds
+        self.displayString = self.seconds2string(self.talkTime)
+        self.clock.config(text=self.displayString)
         self.btn_stop.config(state='disabled')
         self.btn_start.config(state='normal')
     def set15_btn(self, event=None):
-        self.set_btn(event)
-        self.mins = 15
+        self.set_btn(15.0 * 60)
     def set30_btn(self, event=None):
-        self.set_btn(event)
-        self.mins = 30
+        self.set_btn(30.0 * 60)
     def set45_btn(self, event=None):
-        self.set_btn(event)
-        self.mins = 45
+        self.set_btn(45.0 * 60)
 
 counter = CountDown()
