@@ -65,23 +65,20 @@ class CountDown:
         self.btn_set30 = Button(self.controls, text = 'Set 30 (3)', command = self.set30_btn)
         self.btn_set45 = Button(self.controls, text = 'Set 45 (4)', command = self.set45_btn)
         self.btn_set = Button(self.controls, text = 'Set... (t)', command = self.set_window)
-        self.btn_start = Button(self.controls, text = 'Start (S)', command = self.start_btn)
-        self.btn_stop = Button(self.controls, state='disabled', text = 'Stop (Z)', command = self.stop_btn)
+        self.btn_startStop = Button(self.controls, text = 'Start (S)', command = self.toggleRunning_btn)
         # packing widgets in the root window
         self.clock.pack(side="left", fill="both", expand=True)
         self.btn_set15.grid(sticky=EW, row = 1, column = 1, padx = 5, pady = (5,2))
         self.btn_set30.grid(sticky=EW, row = 2, column = 1, padx = 5, pady = (5,2))
         self.btn_set45.grid(sticky=EW, row = 3, column = 1, padx = 5, pady = (5,2))
         self.btn_set.grid(sticky=EW, row = 4, column = 1, padx = 5, pady = (5,2))
-        self.btn_start.grid(sticky=EW, row = 5, column = 1, padx = 5, pady = 2)
-        self.btn_stop.grid(sticky=EW, row = 6, column = 1, padx = 5, pady = (2,5))
+        self.btn_startStop.grid(sticky=EW, row = 5, column = 1, padx = 5, pady = 2)
         if self.visibleControls:
             self.controls.pack(side="left", fill="y", expand=False)
         self.tick()
         # binding events
         self.rootWindow.bind('<Configure>', self.resize)
-        self.rootWindow.bind('S', self.start_btn)
-        self.rootWindow.bind('Z', self.stop_btn)
+        self.rootWindow.bind('S', self.toggleRunning_btn)
         self.rootWindow.bind('1', self.set15_btn)
         self.rootWindow.bind('3', self.set30_btn)
         self.rootWindow.bind('4', self.set45_btn)
@@ -153,28 +150,26 @@ class CountDown:
                 self.clock.config(bg=nextColor)
             self.clock.config(text=self.displayString)
         self.clock.after(self.refreshRate, self.tick)
-    def start_btn(self, event=None):
-        self.clock.config(bg=self.plentyOfTimeColor)
-        self.startTime = time.time()
-        self.btn_start.config(state='disabled')
-        self.btn_stop.config(state='normal')
-        self.running = True
-    def stop_btn(self, event=None):
-        currentTime = time.time()
-        self.clock.config(bg=self.stoppedColor)
-        self.accumulatedTime = self.accumulatedTime + (currentTime - self.startTime)
-        self.btn_start.config(state='normal')
-        self.btn_stop.config(state='disabled')
-        self.running = False
+    def toggleRunning_btn(self, event=None):
+        if self.running:
+            currentTime = time.time()
+            self.clock.config(bg=self.stoppedColor)
+            self.accumulatedTime = self.accumulatedTime + (currentTime - self.startTime)
+            self.btn_startStop.config(text='Start (S)')
+            self.running = False
+        else:
+            self.clock.config(bg=self.plentyOfTimeColor)
+            self.startTime = time.time()
+            self.btn_startStop.config(text='Stop (S)')
+            self.running = True
     def set_btn(self, seconds):
-        self.running = False
+        if self.running:
+            self.toggleRunning_btn()
         self.clock.config(bg=self.defaultColour)
         self.accumulatedTime = 0.0
         self.talkTime = seconds
         self.displayString = self.seconds2string(self.talkTime)
         self.clock.config(text=self.displayString)
-        self.btn_stop.config(state='disabled')
-        self.btn_start.config(state='normal')
     def set15_btn(self, event=None):
         self.set_btn(15.0 * 60)
     def set30_btn(self, event=None):
