@@ -1,5 +1,8 @@
 #!/usr/bin/python
 #
+# Note: written for python 2.7, to update to python 3.x, change Tkinter to tkinter
+#   and tkFont to tkinter.font
+#
 # Note on fonts: Tk as installed by Ubuntu uses XTF to handle fonts. This
 # gives a large number of true type font families and works well in the
 # version of python installed by Ubuntu. However, the version of Tk installed
@@ -18,35 +21,52 @@ class CountDown:
         self.rootWindow.title('GLU 2017 Timer')
         self.rootWindow.geometry("300x250")
         self.rootWindow.resizable(1,1)
+        # configure colors
         self.defaultColour = self.rootWindow.cget("bg")
+        self.plentyOfTimeColor = 'light green'
+        self.shortTimeColor1 = 'orange red'
+        self.shortTimeColor2 = 'coral'
+        self.stoppedColor = self.outOfTimeColor = 'red'
+        # status related variables
         self.time1 = ''
         self.prevSec = ''
         self.mins = 15
-        self.secs = 0
+        self.secs = 10
         self.hours = 0
         self.running = False
-        #clock = Label(rootWindow, font=('fixed', 20, 'bold'))
+        # GUI widgets
         self.controls = Frame(self.rootWindow)
+        self.btn_set15 = Button(self.controls, text = 'Set 15 (1)', command = self.set15_btn)
+        self.btn_set30 = Button(self.controls, text = 'Set 30 (3)', command = self.set30_btn)
+        self.btn_set45 = Button(self.controls, text = 'Set 45 (4)', command = self.set45_btn)
+        self.btn_start = Button(self.controls, text = 'Start (S)', command = self.start_btn)
+        self.btn_stop = Button(self.controls, state='disabled', text = 'Stop (Z)', command = self.stop_btn)
         self.clockfont = tkFont.Font(family="DejaVu Sans", size="20")
         self.clock = Label(self.rootWindow, font=self.clockfont)
-        #clock.grid(row = 1, column = 2, padx = 5, pady = (5,2))
-        self.controls.pack(side="left", fill="y", expand=True)
+        # packing widgets in the root window
+        self.controls.pack(side="left", fill="y", expand=False)
+        self.btn_set15.grid(sticky=EW, row = 1, column = 1, padx = 5, pady = (5,2))
+        self.btn_set30.grid(sticky=EW, row = 2, column = 1, padx = 5, pady = (5,2))
+        self.btn_set45.grid(sticky=EW, row = 3, column = 1, padx = 5, pady = (5,2))
+        self.btn_start.grid(sticky=EW, row = 4, column = 1, padx = 5, pady = 2)
+        self.btn_stop.grid(sticky=EW, row = 5, column = 1, padx = 5, pady = (2,5))
         self.clock.pack(side="left", fill="both", expand=True)
         self.tick()
+        # binding events
         self.rootWindow.bind('<Configure>', self.resize)
-        self.btn_set15 = Button(self.controls, state='disabled', text = 'Set 15 (1)', command = self.set15_btn)
-        self.btn_set45 = Button(self.controls, state='disabled', text = 'Set 45 (4)', command = self.set45_btn)
-        self.btn_set15.grid(sticky=EW, row = 1, column = 1, padx = 5, pady = (5,2))
-        self.btn_set45.grid(sticky=EW, row = 2, column = 1, padx = 5, pady = (5,2))
-        self.btn_start = Button(self.controls, text = 'Start (S)', bg='green', command = self.start_btn)
-        self.btn_start.grid(sticky=EW, row = 3, column = 1, padx = 5, pady = 2)
-        self.btn_stop = Button(self.controls, state='disabled', text = 'Stop (Z)', command = self.stop_btn)
-        self.btn_stop.grid(sticky=EW, row = 4, column = 1, padx = 5, pady = (2,5))
-        #btn_exit = Button(rootWindow, text = 'exit', command = exit)
-        #btn_exit.grid(row = 4, column = 1, padx = 5, pady = 5) 
+        self.rootWindow.bind('S', self.start_btn)
+        self.rootWindow.bind('Z', self.stop_btn)
+        self.rootWindow.bind('1', self.set15_btn)
+        self.rootWindow.bind('3', self.set30_btn)
+        self.rootWindow.bind('4', self.set45_btn)
+        # start GUI main loop
         self.rootWindow.mainloop()
     def resize(self, event):
-        self.clockfont.configure(size = int(self.rootWindow.winfo_width()/4.0))
+        labelWidth = self.clock.winfo_width()
+        labelHeight = self.clock.winfo_height()
+        # heuristics to get the full text maximised inside the widget (including the eventual minus sign)
+        fontSize = min(int(labelHeight*0.9), int(labelWidth/4.3))
+        self.clockfont.configure(size = fontSize)
         self.clock.config(font=self.clockfont)
     def tick(self):
         # get the current local time from the PC
@@ -68,7 +88,12 @@ class CountDown:
                         self.hours = 0
                         self.mins = 0
                         self.secs = 0
-                        self.clock.config(bg='red')
+            if self.mins<5 and self.mins>=4:
+                self.clock.config(bg=self.shortTimeColor1)
+            if self.mins<4:
+                currentColor = self.clock.cget("background")
+                nextColor = self.shortTimeColor2 if currentColor == self.shortTimeColor1 else self.shortTimeColor1
+                self.clock.config(bg=nextColor)
         #time2 = '%02d:%02d:%02d' % (hours, mins, secs)
         self.time2 = '%02d:%02d' % (self.mins, self.secs)
         # if time string has changed, update it
@@ -79,47 +104,39 @@ class CountDown:
         # to update the time display as needed
         # could use >200 ms, but display gets jerky
         self.clock.after(200, self.tick)
-    def start_btn(self):
+    def start_btn(self, event=None):
         #global running
-        self.clock.config(bg='green')
-        self.btn_start.config(state='disabled',background=self.defaultColour)
-        self.btn_stop.config(state='normal',bg='dark red')
-        self.btn_set15.config(state='disabled')
-        self.btn_set45.config(state='disabled')
+        self.clock.config(bg=self.plentyOfTimeColor)
+        self.btn_start.config(state='disabled')
+        self.btn_stop.config(state='normal')
+        #self.btn_set15.config(state='disabled')
+        #self.btn_set45.config(state='disabled')
         self.running = True
-    def stop_btn(self):
+    def stop_btn(self, event=None):
         #global running 
-        self.clock.config(bg='dark red')
-        self.btn_start.config(state='normal',bg='green')
-        self.btn_stop.config(state='disabled',bg=self.defaultColour)
-        self.btn_set15.config(state='normal')
-        self.btn_set45.config(state='normal')
+        self.clock.config(bg=self.stoppedColor)
+        self.btn_start.config(state='normal')
+        self.btn_stop.config(state='disabled')
+        #self.btn_set15.config(state='normal')
+        #self.btn_set45.config(state='normal')
         self.running = False
-    def set15_btn(self):
-        #global prevSec, time1, secs, mins, hours, running 
+    def set_btn(self, event=None):
         self.clock.config(bg=self.defaultColour)
         self.hours = 0
+        self.secs = 0
+        self.prevSec = ''
+        self.time1 = ''
+        self.running = False
+        self.btn_stop.config(state='disabled')
+        self.btn_start.config(state='normal')
+    def set15_btn(self, event=None):
+        self.set_btn(event)
         self.mins = 15
-        self.secs = 0
-        self.prevSec = ''
-        self.time1 = ''
-        self.running = False
-        self.btn_stop.config(state='disabled',bg=self.defaultColour)
-        self.btn_start.config(state='normal',bg='green')
-        self.btn_set15.config(state='disabled')
-        self.btn_set45.config(state='normal')
-    def set45_btn(self):
-        #global prevSec, time1, secs, mins, hours, running 
-        self.clock.config(bg=self.defaultColour)
-        self.hours = 0
+    def set30_btn(self, event=None):
+        self.set_btn(event)
+        self.mins = 30
+    def set45_btn(self, event=None):
+        self.set_btn(event)
         self.mins = 45
-        self.secs = 0
-        self.prevSec = ''
-        self.time1 = ''
-        self.running = False
-        self.btn_stop.config(state='disabled',bg=self.defaultColour)
-        self.btn_start.config(state='normal',bg='green')
-        self.btn_set15.config(state='normal')
-        self.btn_set45.config(state='disabled')
 
 counter = CountDown()
