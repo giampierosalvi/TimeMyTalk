@@ -109,7 +109,7 @@ class CountDown():
         labelWidth = self.clock.winfo_width()
         labelHeight = self.clock.winfo_height()
         # heuristics to get the full text maximised inside the widget (including the eventual minus sign)
-        fontSize = min(int(labelHeight*0.9), int(labelWidth/4.3))
+        fontSize = min(int(labelHeight*0.9), int(labelWidth/4.5))
         self.clockfont.configure(size = fontSize)
         self.clock.config(font=self.clockfont)
     def toggleFullscreen(self, event):
@@ -137,9 +137,9 @@ class CountDown():
         #print('string2seconds', string)
         if string == '':
             return 0.0
-        multiply = 1
+        multiply = 1.0
         if string[0] == '-':
-            multiply = -1
+            multiply = -1.0
             string = string[1:]
         t0 = time.mktime(time.strptime('0:0', '%M:%S'))
         t1 = time.mktime(time.strptime(string, '%M:%S'))
