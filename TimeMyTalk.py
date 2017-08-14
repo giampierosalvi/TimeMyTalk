@@ -13,7 +13,7 @@
 # f:       toggle fullscreeen
 # Esc:     exit fullscreen
 # c:       toggle controls (button) visibility
-# S:       toggle start/stop countdown
+# Space:   toggle start/stop countdown
 # q:       quit (without confirmation)
 #
 # Note: written for python 2.7, to update to python 3.x, change Tkinter to tkinter
@@ -81,7 +81,9 @@ class CountDown():
         self.btn_preset2 = Button(self.controls, text = 'Set '+self.preset2txt+' (2)', command = self.preset2_btn)
         self.btn_preset3 = Button(self.controls, text = 'Set '+self.preset3txt+' (3)', command = self.preset3_btn)
         self.btn_set = Button(self.controls, text = 'Set... (t)', command = self.set_window)
-        self.btn_startStop = Button(self.controls, text = 'Start (S)', command = self.toggleRunning_btn)
+        self.btn_startStop = Button(self.controls, text = 'Start (space)', command = self.toggleRunning_btn)
+        self.btn_fullscreen = Button(self.controls, text = 'Fullscreen (f)', command = self.toggleFullscreen)
+        self.btn_quit = Button(self.controls, text = 'Quit (q)', command = self.Quit)
         # packing widgets in the root window
         self.clock.pack(side="left", fill="both", expand=True)
         self.btn_preset1.grid(sticky=EW, row = 1, column = 1, padx = 5, pady = (5,2))
@@ -89,12 +91,14 @@ class CountDown():
         self.btn_preset3.grid(sticky=EW, row = 3, column = 1, padx = 5, pady = (5,2))
         self.btn_set.grid(sticky=EW, row = 4, column = 1, padx = 5, pady = (5,2))
         self.btn_startStop.grid(sticky=EW, row = 5, column = 1, padx = 5, pady = 2)
+        self.btn_fullscreen.grid(sticky=EW, row = 6, column = 1, padx = 5, pady = 2)
+        self.btn_quit.grid(sticky=EW, row = 7, column = 1, padx = 5, pady = 2)
         if self.visibleControls:
             self.controls.pack(side="left", fill="y", expand=False)
         self.tick()
         # binding events
         self.mainWindow.bind('<Configure>', self.resize)
-        self.mainWindow.bind('S', self.toggleRunning_btn)
+        self.mainWindow.bind('<space>', self.toggleRunning_btn)
         self.mainWindow.bind('1', self.preset1_btn)
         self.mainWindow.bind('2', self.preset2_btn)
         self.mainWindow.bind('3', self.preset3_btn)
@@ -112,7 +116,7 @@ class CountDown():
         fontSize = min(int(labelHeight*0.9), int(labelWidth/4.5))
         self.clockfont.configure(size = fontSize)
         self.clock.config(font=self.clockfont)
-    def toggleFullscreen(self, event):
+    def toggleFullscreen(self, event=None):
         self.isFullscreen = not self.isFullscreen
         self.mainWindow.attributes('-fullscreen', self.isFullscreen)
     def endFullscreen(self, event):
@@ -171,12 +175,12 @@ class CountDown():
             currentTime = time.time()
             self.clock.config(bg=self.stoppedColor)
             self.accumulatedTime = self.accumulatedTime + (currentTime - self.startTime)
-            self.btn_startStop.config(text='Start (S)')
+            self.btn_startStop.config(text='Start (space)')
             self.running = False
         else:
             self.clock.config(bg=self.plentyOfTimeColor)
             self.startTime = time.time()
-            self.btn_startStop.config(text='Stop (S)')
+            self.btn_startStop.config(text='Stop (space)')
             self.running = True
     def set_btn(self, seconds):
         if self.running:
