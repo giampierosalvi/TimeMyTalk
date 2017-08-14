@@ -8,8 +8,8 @@
 # green to red and finally starts blinking between two shades of red.
 #
 # Keys:
-# 1, 3, 4: set length to 15, 30 and 45 minutes (adapted to GLU 2017)
-# t:       set length freely with a string in the format MM:SS
+# 1, 2, 3: preset durations, hardcoded to 15, 30 and 40 minutes but easily configurable
+# t:       set duration freely with a string in the format MM:SS
 # f:       toggle fullscreeen
 # Esc:     exit fullscreen
 # c:       toggle controls (button) visibility
@@ -60,6 +60,10 @@ class CountDown():
         self.shortTimeColor1 = 'orange red'
         self.shortTimeColor2 = 'coral'
         self.stoppedColor = self.outOfTimeColor = 'red'
+        # configure preset buttons
+        self.preset1txt = "15:00"
+        self.preset2txt = "30:00"
+        self.preset3txt = "40:00"
         # configure times (in seconds)
         self.refreshRate = 100 # milliseconds. The lower the smoother, but the more CPU intensive
         self.firstWarningSeconds = 5.0 * 60
@@ -73,16 +77,16 @@ class CountDown():
         self.clockfont = tkFont.Font(family="DejaVu Sans", size="20")
         self.clock = Label(self.mainWindow, font=self.clockfont, text=self.displayString)
         self.controls = Frame(self.mainWindow)
-        self.btn_set15 = Button(self.controls, text = 'Set 15 (1)', command = self.set15_btn)
-        self.btn_set30 = Button(self.controls, text = 'Set 30 (3)', command = self.set30_btn)
-        self.btn_set45 = Button(self.controls, text = 'Set 45 (4)', command = self.set45_btn)
+        self.btn_preset1 = Button(self.controls, text = 'Set '+self.preset1txt+' (1)', command = self.preset1_btn)
+        self.btn_preset2 = Button(self.controls, text = 'Set '+self.preset2txt+' (2)', command = self.preset2_btn)
+        self.btn_preset3 = Button(self.controls, text = 'Set '+self.preset3txt+' (3)', command = self.preset3_btn)
         self.btn_set = Button(self.controls, text = 'Set... (t)', command = self.set_window)
         self.btn_startStop = Button(self.controls, text = 'Start (S)', command = self.toggleRunning_btn)
         # packing widgets in the root window
         self.clock.pack(side="left", fill="both", expand=True)
-        self.btn_set15.grid(sticky=EW, row = 1, column = 1, padx = 5, pady = (5,2))
-        self.btn_set30.grid(sticky=EW, row = 2, column = 1, padx = 5, pady = (5,2))
-        self.btn_set45.grid(sticky=EW, row = 3, column = 1, padx = 5, pady = (5,2))
+        self.btn_preset1.grid(sticky=EW, row = 1, column = 1, padx = 5, pady = (5,2))
+        self.btn_preset2.grid(sticky=EW, row = 2, column = 1, padx = 5, pady = (5,2))
+        self.btn_preset3.grid(sticky=EW, row = 3, column = 1, padx = 5, pady = (5,2))
         self.btn_set.grid(sticky=EW, row = 4, column = 1, padx = 5, pady = (5,2))
         self.btn_startStop.grid(sticky=EW, row = 5, column = 1, padx = 5, pady = 2)
         if self.visibleControls:
@@ -91,9 +95,9 @@ class CountDown():
         # binding events
         self.mainWindow.bind('<Configure>', self.resize)
         self.mainWindow.bind('S', self.toggleRunning_btn)
-        self.mainWindow.bind('1', self.set15_btn)
-        self.mainWindow.bind('3', self.set30_btn)
-        self.mainWindow.bind('4', self.set45_btn)
+        self.mainWindow.bind('1', self.preset1_btn)
+        self.mainWindow.bind('2', self.preset2_btn)
+        self.mainWindow.bind('3', self.preset3_btn)
         self.mainWindow.bind('t', self.set_window)
         self.mainWindow.bind('f', self.toggleFullscreen)
         self.mainWindow.bind('<Escape>', self.endFullscreen)
@@ -182,12 +186,12 @@ class CountDown():
         self.talkTime = seconds
         self.displayString = self.seconds2string(self.talkTime)
         self.clock.config(text=self.displayString)
-    def set15_btn(self, event=None):
-        self.set_btn(15.0 * 60)
-    def set30_btn(self, event=None):
-        self.set_btn(30.0 * 60)
-    def set45_btn(self, event=None):
-        self.set_btn(45.0 * 60)
+    def preset1_btn(self, event=None):
+        self.set_btn(self.string2seconds(self.preset1txt))
+    def preset2_btn(self, event=None):
+        self.set_btn(self.string2seconds(self.preset2txt))
+    def preset3_btn(self, event=None):
+        self.set_btn(self.string2seconds(self.preset3txt))
     def setFromString_btn(self, event=None):
         self.set_btn(self.string2seconds(self.inputString.get()))
     def set_window(self, event=None):
