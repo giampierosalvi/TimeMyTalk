@@ -9,7 +9,7 @@
 #
 # Keys:
 # 1, 2, 3: preset durations, hardcoded to 15, 30 and 40 minutes but easily configurable
-# t:       set duration freely with a string in the format MM:SS
+# s:       set duration freely with a string in the format MM:SS
 # f:       toggle fullscreeen
 # Esc:     exit fullscreen
 # c:       toggle controls (button) visibility
@@ -102,7 +102,7 @@ class CountDown():
         self.mainWindow.bind('1', self.preset1_btn)
         self.mainWindow.bind('2', self.preset2_btn)
         self.mainWindow.bind('3', self.preset3_btn)
-        self.mainWindow.bind('t', self.set_window)
+        self.mainWindow.bind('s', self.set_window)
         self.mainWindow.bind('f', self.toggleFullscreen)
         self.mainWindow.bind('<Escape>', self.endFullscreen)
         self.mainWindow.bind('c', self.toggleControlsVisibility)
@@ -198,17 +198,21 @@ class CountDown():
         self.set_btn(self.string2seconds(self.preset3txt))
     def setFromString_btn(self, event=None):
         self.set_btn(self.string2seconds(self.inputString.get()))
+        self.setDurationW.destroy()
     def set_window(self, event=None):
-        w = Toplevel(self.mainWindow)
-        w.wm_title("Set length")
-        l = Label(w, text="Set talk length (MM:SS)")
+        self.setDurationW = Toplevel(self.mainWindow)
+        self.setDurationW.wm_title("Set duration")
+        l = Label(self.setDurationW, text="Set talk length (MM:SS)")
         l.pack(side="top", fill="both", expand=True, padx=10, pady=5)
         self.inputString=StringVar()
         self.inputString.set('')
-        f = Entry(w, textvariable=self.inputString)
+        f = Entry(self.setDurationW, textvariable=self.inputString)
         f.pack(side="top", fill="both", expand=True, padx=10, pady=5)
-        b = Button(w, text="Ok", width=5, command=self.setFromString_btn)
+        b = Button(self.setDurationW, text="Ok", width=5, command=self.setFromString_btn)
         b.pack(side="top", expand=True, padx=10, pady=5)
+        f.focus_set()
+        self.setDurationW.bind('<Return>', self.setFromString_btn)
+
 
 root = Tk()
 
