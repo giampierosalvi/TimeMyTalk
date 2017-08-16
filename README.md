@@ -13,4 +13,4 @@ Now you can:
 3) start `TimeMyTalk.py` and make it full screen (press `f`)
 4) sit in the audience with the wireless keyboard to set, start and stop the timer
 
-You can either control the tool with the mouse and buttons (press `c` to make them visible), or use the keyboard (see the instructons in `TimeMyTalk.py` for details). A number of predefined talk lenghts have been included to simplify the use. You can easily modify the lenghts, if you need to.
+You can either control the tool with the mouse and buttons (press `c` to make them visible), or use the keyboard (see the instructons in `TimeMyTalk.py` for details). Three preset talk lenghts have been included to simplify the use (select them with the keys `1`, `2`, and `3`). You can easily modify the lenghts, if you need to.
