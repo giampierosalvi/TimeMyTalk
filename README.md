@@ -9,7 +9,7 @@ You will need either an old laptop or:
 
 Now you can:
 1) Attach the respberry pi to the screen so that the whole thing is easy to carry (or use the laptop)
-2) place the screen so that both the audience and the presenter can easily see it
+2) place the screen so that both the audience and the presenter can easily see it to improve shame factor ;)
 3) start `TimeMyTalk.py` and make it full screen (press `f`)
 4) sit in the audience with the wireless keyboard to set, start and stop the timer
 
