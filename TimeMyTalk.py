@@ -58,7 +58,7 @@ class CountDown():
         self.defaultColour = self.mainWindow.cget("bg")
         self.plentyOfTimeColor = 'light green'
         self.shortTimeColor1 = 'orange red'
-        self.shortTimeColor2 = 'coral'
+        self.shortTimeColor2 = 'white'
         self.stoppedColor = self.outOfTimeColor = 'red'
         # configure preset buttons
         self.preset1txt = "15:00"
@@ -67,7 +67,7 @@ class CountDown():
         # configure times (in seconds)
         self.refreshRate = 100 # milliseconds. The lower the smoother, but the more CPU intensive
         self.firstWarningSeconds = 5.0 * 60
-        self.secondWarningSeconds = 2.0 * 60
+        self.secondWarningSeconds = 0.0 * 60
         self.accumulatedTime = 0.0 # time accumulated between subsequent start/stop
         self.startTime = 0.0       # time from Event when start button is pressed
         self.talkTime = 15.0 * 60  # lenght of the talk
