@@ -63,11 +63,11 @@ class CountDown():
         # configure preset buttons
         self.preset1txt = "15:00"
         self.preset2txt = "30:00"
-        self.preset3txt = "40:00"
+        self.preset3txt = "35:00"
         # configure times (in seconds)
         self.refreshRate = 100 # milliseconds. The lower the smoother, but the more CPU intensive
-        self.firstWarningSeconds = 5.0 * 60
-        self.secondWarningSeconds = 2.0 * 60
+        self.firstWarningSeconds = 2.0 * 60
+        self.secondWarningSeconds = 0.0 * 60
         self.accumulatedTime = 0.0 # time accumulated between subsequent start/stop
         self.startTime = 0.0       # time from Event when start button is pressed
         self.talkTime = 15.0 * 60  # lenght of the talk
@@ -113,7 +113,7 @@ class CountDown():
         labelWidth = self.clock.winfo_width()
         labelHeight = self.clock.winfo_height()
         # heuristics to get the full text maximised inside the widget (including the eventual minus sign)
-        fontSize = min(int(labelHeight*0.9), int(labelWidth/4.5))
+        fontSize = min(int(labelHeight*0.9), int(labelWidth/4.9))
         self.clockfont.configure(size = fontSize)
         self.clock.config(font=self.clockfont)
     def toggleFullscreen(self, event=None):
@@ -133,7 +133,7 @@ class CountDown():
     def seconds2string(self, seconds):
         """ converts possibly negative times to string """
         if seconds<0:
-            return '-'+time.strftime("%M:%S", time.gmtime(-seconds))
+            return '+'+time.strftime("%M:%S", time.gmtime(-seconds))
         else:
             return time.strftime("%M:%S", time.gmtime(seconds))
     def string2seconds(self, string):
