@@ -145,8 +145,8 @@ class CountDown():
         if string[0] == '-':
             multiply = -1.0
             string = string[1:]
-        t0 = time.mktime(time.strptime('0:0', '%M:%S'))
-        t1 = time.mktime(time.strptime(string, '%M:%S'))
+        t0 = time.mktime(time.strptime('30 Nov 00 0:0', '%d %b %y %M:%S'))
+        t1 = time.mktime(time.strptime('30 Nov 00 '+string, '%d %b %y %M:%S'))
         return multiply * (t1-t0)
     def tick(self):
         # get the current local time from the PC
