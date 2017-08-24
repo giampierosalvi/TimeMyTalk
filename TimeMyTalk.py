@@ -58,7 +58,7 @@ class CountDown():
         self.defaultColour = self.mainWindow.cget("bg")
         self.plentyOfTimeColor = 'light green'
         self.shortTimeColor1 = 'orange red'
-        self.shortTimeColor2 = 'coral'
+        self.shortTimeColor2 = 'white'
         self.stoppedColor = self.outOfTimeColor = 'red'
         # configure preset buttons
         self.preset1txt = "15:00"
@@ -145,8 +145,8 @@ class CountDown():
         if string[0] == '-':
             multiply = -1.0
             string = string[1:]
-        t0 = time.mktime(time.strptime('0:0', '%M:%S'))
-        t1 = time.mktime(time.strptime(string, '%M:%S'))
+        t0 = time.mktime(time.strptime('30 Nov 00 0:0', '%d %b %y %M:%S'))
+        t1 = time.mktime(time.strptime('30 Nov 00 '+string, '%d %b %y %M:%S'))
         return multiply * (t1-t0)
     def tick(self):
         # get the current local time from the PC
