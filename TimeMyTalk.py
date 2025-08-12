@@ -53,7 +53,7 @@ class CountDown():
         self.mainWindow.geometry("300x250")
         self.mainWindow.resizable(1,1)
         self.isFullscreen = False
-        self.visibleControls = False
+        self.visibleControls = True
         # configure colors
         self.defaultColour = self.mainWindow.cget("bg")
         self.plentyOfTimeColor = 'light green'
