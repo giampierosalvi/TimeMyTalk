@@ -40,8 +40,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from Tkinter import *
-import tkFont
+from tkinter import *
+import tkinter.font as font
 #from Tkinter import ttk
 import time
 
@@ -74,7 +74,7 @@ class CountDown():
         self.displayString = self.seconds2string(self.talkTime)
         self.running = False
         # GUI widgets
-        self.clockfont = tkFont.Font(family="DejaVu Sans", size="20")
+        self.clockfont = font.Font(family="DejaVu Sans", size="20")
         self.clock = Label(self.mainWindow, font=self.clockfont, text=self.displayString)
         self.controls = Frame(self.mainWindow)
         self.btn_preset1 = Button(self.controls, text = 'Set '+self.preset1txt+' (1)', command = self.preset1_btn)
@@ -83,6 +83,7 @@ class CountDown():
         self.btn_set = Button(self.controls, text = 'Set... (t)', command = self.set_window)
         self.btn_startStop = Button(self.controls, text = 'Start (space)', command = self.toggleRunning_btn)
         self.btn_fullscreen = Button(self.controls, text = 'Fullscreen (f)', command = self.toggleFullscreen)
+        self.btn_showhide = Button(self.controls, text = 'Show/Hide Controls (c)', command = self.toggleControlsVisibility)
         self.btn_quit = Button(self.controls, text = 'Quit (q)', command = self.Quit)
         # packing widgets in the root window
         self.clock.pack(side="left", fill="both", expand=True)
@@ -92,7 +93,8 @@ class CountDown():
         self.btn_set.grid(sticky=EW, row = 4, column = 1, padx = 5, pady = (5,2))
         self.btn_startStop.grid(sticky=EW, row = 5, column = 1, padx = 5, pady = 2)
         self.btn_fullscreen.grid(sticky=EW, row = 6, column = 1, padx = 5, pady = 2)
-        self.btn_quit.grid(sticky=EW, row = 7, column = 1, padx = 5, pady = 2)
+        self.btn_showhide.grid(sticky=EW, row = 7, column = 1, padx = 5, pady = 2)
+        self.btn_quit.grid(sticky=EW, row = 8, column = 1, padx = 5, pady = 2)
         if self.visibleControls:
             self.controls.pack(side="left", fill="y", expand=False)
         self.tick()
@@ -122,7 +124,7 @@ class CountDown():
     def endFullscreen(self, event):
         self.isFullscreen = False
         self.mainWindow.attributes('-fullscreen', self.isFullscreen)
-    def toggleControlsVisibility(self, event):
+    def toggleControlsVisibility(self, event=None):
         if self.visibleControls:
             self.controls.pack_forget()
         else:
